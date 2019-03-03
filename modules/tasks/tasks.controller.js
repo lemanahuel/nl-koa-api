@@ -32,9 +32,20 @@ module.exports = class Tasks {
   }
 
   static updateTitle(ctx) {
-    return TaskModel.findByIdAndUpdate(ctx.params.id, {
-      title: ctx.request.body.title
-    }).lean().exec().then(ctx.ok, ctx.badRequest);
+    // return TaskModel.findByIdAndUpdate(ctx.params.id, {
+    //   title: ctx.request.body.title
+    // }).lean().exec().then(ctx.ok, ctx.badRequest);
+
+    let taskDoc = null;
+    async.parallel([pCb => {
+      TaskModel.findById(ctx.params.id).exec((err, doc) => {
+        taskDoc = doc;
+        pCb(err);
+      });
+    }], err => {
+      taskDoc.title = ctx.request.body.title;
+      taskDoc.save().then(ctx.ok, ctx.badRequest);
+    });
   }
 
   static updateCompleted(ctx) {
@@ -43,50 +54,30 @@ module.exports = class Tasks {
     }).lean().exec().then(ctx.ok, ctx.badRequest);
   }
 
-  static updateImages(ctx) {
-    // return Cloudy.uploadImages(ctx.request.files).then(images => {
-    //   return TaskModel.findById(ctx.params.id).select('images').lean().exec().then(doc => {
-    //     return TaskModel.findByIdAndUpdate(ctx.params.id, {
-    //       images: _.concat(doc.images || [], _.map(images, img => img.url))
-    //     }).lean().exec().then(ctx.ok, ctx.badRequest);
-    //   }, ctx.badRequest);
-    // }, ctx.badRequest);
-    // return new Promise((resolve, reject) => {
-    let taskDoc = null;
-    let uploadedImages = [];
-    return async.parallel([pCb => {
-      Cloudy.uploadImages(ctx.request.files).then(images => {
-        uploadedImages = images;
-        pCb(null);
-      }, pCb);
-    }, pCb => {
-      TaskModel.findById(ctx.params.id).select('images').lean().exec((err, doc) => {
-        taskDoc = doc;
-        pCb(err);
+  static async updateImages(ctx) {
+    function uploadImages(files) {
+      return new Promise((resolve, reject) => {
+        return Cloudy.uploadImages(files).then(resolve, reject);
       });
-    }], err => {
-      return TaskModel.findByIdAndUpdate(ctx.params.id, {
-        images: _.concat(taskDoc.images || [], _.map(uploadedImages, img => img.url))
-      }).lean().exec().then(ctx.ok, ctx.badRequest);;
-    });
-    // });
-    // let taskDoc = null;
-    // let uploadedImages = [];
-    // return async.parallel([pCb => {
-    //   Cloudy.uploadImages(ctx.request.files).then(images => {
-    //     uploadedImages = images;
-    //     pCb(null);
-    //   }, pCb);
-    // }, pCb => {
-    //   TaskModel.findById(ctx.params.id).select('images').lean().exec((err, doc) => {
-    //     taskDoc = doc;
-    //     pCb(err);
-    //   });
-    // }], err => {
-    //   return TaskModel.findByIdAndUpdate(ctx.params.id, {
-    //     images: _.concat(taskDoc.images || [], _.map(uploadedImages, img => img.url))
-    //   }).lean().exec().then(ctx.ok, ctx.badRequest);
-    // });
+    }
+
+    function getTaskImages(taskId) {
+      return new Promise((resolve, reject) => {
+        return TaskModel.findById(taskId).select('images').lean().exec().then(resolve, reject);
+      });
+    }
+
+    function updateImages(taskId, docImages, images) {
+      return new Promise((resolve, reject) => {
+        return TaskModel.findByIdAndUpdate(taskId, {
+          images: _.concat(docImages || [], _.map(images, img => img.url))
+        }).lean().exec().then(resolve, reject);
+      });
+    }
+
+    return await Promise.all([getTaskImages(ctx.params.id), uploadImages(ctx.request.files)]).then(values => {
+      return updateImages(ctx.params.id, values[0].images, values[1]).then(ctx.ok, ctx.badRequest);
+    }, ctx.badRequest);
   }
 
   static delete(ctx) {

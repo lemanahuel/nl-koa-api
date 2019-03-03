@@ -25,9 +25,11 @@
     "koa-pug": "^3.0.0-2",
     "koa-respond": "^2.1.0",
     "koa-router": "^7.4.0",
+    "koa-session": "^5.10.1",
     "koa-static": "^5.0.0",
     "lodash": "^4.17.11",
     "mongoose": "^5.4.16",
-    "pug": "^2.0.3"
+    "pug": "^2.0.3",
+    "swagger-koa": "^2.1.0"
   }
 }
