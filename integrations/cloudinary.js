@@ -32,22 +32,4 @@ module.exports = class Cloudy {
     });
   }
 
-  static uploadImages2(images, cb) {
-    let uploaded = [];
-    async.each(images.file, (file, cb) => {
-      if (file && file.path) {
-        Cloudinary.uploader.upload(file.path, res => {
-          uploaded.push({
-            url: res.url ? res.url.replace(/http:\/\//, 'https://') : res.url
-          });
-          cb(null);
-        });
-      } else {
-        cb(null);
-      }
-    }, err => {
-      cb(err, uploaded);
-    });
-  }
-
 }

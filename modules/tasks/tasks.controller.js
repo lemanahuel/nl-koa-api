@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const async = require('koa-async');
 const Cloudy = require('../../integrations/cloudinary');
+const Sendgrid = require('../../integrations/sendgrid');
 const TaskModel = require('./tasks.model');
 
 module.exports = class Tasks {
@@ -27,8 +28,36 @@ module.exports = class Tasks {
     return TaskModel.findById(ctx.params.id).lean().exec().then(ctx.ok, ctx.badRequest);
   }
 
-  static update(ctx) {
-    return TaskModel.findByIdAndUpdate(ctx.params.id, ctx.request.body).lean().exec().then(ctx.ok, ctx.badRequest);
+  static async update(ctx) {
+    function getTask(taskId) {
+      return new Promise((resolve, reject) => {
+        return TaskModel.findById(taskId).lean().exec().then(resolve, reject);
+      });
+    }
+
+    function updateTask(taskId, body) {
+      return new Promise((resolve, reject) => {
+        return TaskModel.findByIdAndUpdate(taskId, body).lean().exec().then(resolve, reject);
+      });
+    }
+
+    function sendActionMail(params) {
+      return new Promise((resolve, reject) => {
+        return Sendgrid.send(params).then(resolve, reject);
+      });
+    }
+
+    return await getTask(ctx.params.id).then(oldTask => {
+      return updateTask(ctx.params.id, ctx.request.body).then(newTask => {
+        return sendActionMail({
+          oldTask,
+          newTask,
+          action: 'tarea actualizada'
+        }).then(() => {
+          ctx.ok(newTask);
+        }, ctx.badRequest);
+      }, ctx.badRequest);
+    }, ctx.badRequest);
   }
 
   static updateTitle(ctx) {
