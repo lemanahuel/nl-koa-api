@@ -1,0 +1,33 @@
+{
+  "name": "koa-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/cors": "^2.2.3",
+    "async": "^2.6.2",
+    "cloudinary": "^1.13.2",
+    "forever": "^0.15.3",
+    "glob": "^7.1.2",
+    "koa": "^2.7.0",
+    "koa-async": "^1.0.0",
+    "koa-basic-auth": "^4.0.0",
+    "koa-body": "^4.0.8",
+    "koa-bodyparser": "^4.2.1",
+    "koa-helmet": "^4.0.0",
+    "koa-logger": "^3.2.0",
+    "koa-pug": "^3.0.0-2",
+    "koa-respond": "^2.1.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "lodash": "^4.17.11",
+    "mongoose": "^5.4.16",
+    "pug": "^2.0.3"
+  }
+}
