@@ -1,9 +1,10 @@
 
+const config = require('../config/config');
 const Cloudinary = require('cloudinary');
 const async = require('async');
 
 Cloudinary.config({
-  url: process.env.CLOUDINARY_URL
+  url: config.CLOUDINARY_URL
 });
 
 module.exports = class Cloudy {

@@ -1,48 +1,36 @@
-const db = require('mongoose');
-const Koa = require('koa');
-const koaRouter = require('koa-router');
-const koaLogger = require('koa-logger');
-const koaCors = require('@koa/cors');
-const koaBodyParser = require('koa-bodyparser');
-const koaHelmet = require('koa-helmet');
-const koaRespond = require('koa-respond');
-const koaBody = require('koa-body');
-const app = new Koa();
-const router = new koaRouter();
-const PORT = process.env.PORT || 5001;
+const config = require('./config/config');
 const glob = require('glob');
 const path = require('path');
 const _ = require('lodash');
 const async = require('async');
-
-const connectDb = () => {
-  db.connect('mongodb://127.0.0.1:27017/todo-list', {
-    promiseLibrary: global.Promise,
-    useNewUrlParser: true
-  }).then(() => {
-    // console.log('db-connect', DB_URI);
-  }, err => {
-    // console.log('err-db-connect', err);
-    connectDb();
-  });
-};
-
-db.Promise = global.Promise;
-connectDb();
+const Koa = require('koa');
+const koaRouter = require('koa-router');
+const logger = require('koa-logger');
+const cors = require('@koa/cors');
+const bodyParser = require('koa-bodyparser');
+const helmet = require('koa-helmet');
+const respond = require('koa-respond');
+const body = require('koa-body');
+const db = require('./integrations/mongodb');
+const app = new Koa();
+const router = new koaRouter();
+const PORT = config.PORT;
 
 // app.on('error', (err, ctx) => {
 //   log.error('server error', err, ctx);
 // });
 
+db.connect();
+
 if (process.env.NODE_ENV !== 'production') {
-  app.use(koaLogger());
+  app.use(logger());
 }
 
-app.use(koaBody({ multipart: true }))
-app.use(koaHelmet());
-app.use(koaRespond());
-app.use(koaCors());
-app.use(koaBodyParser({
+app.use(helmet());
+app.use(respond());
+app.use(cors());
+app.use(body({ multipart: true }))
+app.use(bodyParser({
   enableTypes: ['json'],
   jsonLimit: '5mb',
   strict: true,
