@@ -55,7 +55,7 @@ app.use(bodyParser({
 
 app.keys = ['codigo secreto de la sesion de koa'];
 
-const CONFIG = {
+app.use(session({
   key: 'koa:sess',
   maxAge: 86400000,
   autoCommit: true,
@@ -64,9 +64,7 @@ const CONFIG = {
   signed: true,
   rolling: false,
   renew: false
-};
-
-app.use(session(CONFIG, app));
+}, app));
 
 // app.use(async ctx => {
 //   // the parsed body will store in ctx.request.body
@@ -75,7 +73,6 @@ app.use(session(CONFIG, app));
 // });
 
 // API routes
-
 router.all('/', ctx => {
   ctx.redirect('/docs');
   ctx.status = 301;
