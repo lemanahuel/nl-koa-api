@@ -1,13 +1,12 @@
 
 const _ = require('lodash');
-const domains = ['localhost:5001', 'nl-koa-api', 'nl-koa-www'];
+const domains = ['localhost:5000', 'nl-koa-api.herokuapp.com', 'nl-koa-www.herokuapp.com'];
 
 module.exports = {
   isValidDomain: (ctx, next) => {
-    console.log(ctx.request.header.host)
-    if (_.indexOf(domains, ctx.request.header.host) > -1) {
+    if (_.indexOf(domains, ctx.request.header.origin) > -1) {
       return next();
     }
-    return ctx.badRequest({ error: 'err-invalid-cors-domain' });
+    return ctx.badRequest({ error: 'err-invalid-origin-domain' });
   }
 };
