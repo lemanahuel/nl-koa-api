@@ -17,11 +17,10 @@ const Pug = require('koa-pug');
 const db = require('./integrations/mongodb');
 const app = new Koa();
 const router = new koaRouter();
-const PORT = config.PORT;
 
-// app.on('error', (err, ctx) => {
-//   log.error('server error', err, ctx);
-// });
+app.on('error', (err, ctx) => {
+  log.error('server error', err, ctx);
+});
 
 db.connect();
 
@@ -94,6 +93,6 @@ glob('./modules/**/*.routes.js', {}, (err, files) => {
   }, err => {
     app.use(router.routes());
     app.use(router.allowedMethods());
-    app.listen(PORT, () => console.log(`KOA-API server started on ${PORT}`))
+    app.listen(config.PORT, () => console.log(`KOA-API server started on ${config.PORT}`))
   });
 });
