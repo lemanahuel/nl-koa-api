@@ -18,15 +18,15 @@ const db = require('./integrations/mongodb');
 const app = new Koa();
 const router = new koaRouter();
 
-app.on('error', (err, ctx) => {
-  log.error('server error', err, ctx);
-});
-
 db.connect();
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(logger());
 }
+
+app.on('error', (err, ctx) => {
+  console.error('server error', err, ctx);
+});
 
 const pug = new Pug({
   viewPath: './public/docs',
@@ -77,20 +77,24 @@ router.all('/', ctx => {
   ctx.status = 301;
 });
 
-router.all('/docs', ctx => {
-  ctx.send(200, './public/docs');
-});
-router.all('/docs/endpoint', ctx => {
-  ctx.render('endpoint.pug', {
-    description: 'Probando templating con PUG'
-  });
-});
-
 glob('./modules/**/*.routes.js', {}, (err, files) => {
   async.each(files, (file, cb) => {
     require(path.resolve(file))(router);
     cb(null);
   }, err => {
+    router.all('/docs', ctx => {
+      ctx.render('index.pug', {
+        description: 'Probando templating con PUG',
+        endpoints: _.map(_.filter(router.stack, stack => {
+          return stack.path.length > 1 && stack.path !== '/docs';
+        }), stack => {
+          return {
+            path: stack.path,
+            methods: stack.methods
+          };
+        }),
+      }, {}, true);
+    });
     app.use(router.routes());
     app.use(router.allowedMethods());
     app.listen(config.PORT, () => console.log(`KOA-API server started on ${config.PORT}`))

@@ -1,0 +1,26 @@
+
+doctype html
+html(lang="en")
+
+head
+title= name
+meta(charset="utf-8")
+meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
+link(href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T", crossorigin="anonymous")
+
+body
+
+div(class='container')
+  div(class='row')
+    div(class='col-sm-8 offset-sm-2')
+      br
+      p.greetings#people= description
+      ul(class='list-group')
+        each val in endpoints
+          li(class='list-group-item list-group-item-action d-flex justify-content-between align-items-center')
+            div
+              span= val.path
+            div
+              each method in val.methods
+                small(class='badge badge-primary badge-pill')= method
+
