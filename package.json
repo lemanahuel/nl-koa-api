@@ -21,7 +21,7 @@
     "node": "11.x.x",
     "npm": "6.x.x"
   },
-  "license": "ISC",
+  "license": "BY-NC-SA",
   "dependencies": {
     "@koa/cors": "^2.2.3",
     "@sendgrid/mail": "^6.3.1",
