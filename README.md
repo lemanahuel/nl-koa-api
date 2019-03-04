@@ -1,5 +1,17 @@
-# 💻 KOA + MONGODB, comenzá a programar hoy! 👊
+## 💻 KOA + MONGODB, comenzá a programar hoy! 👊
+Desarrollaremos un CRUD completo con una API RestFul con NODE + KOA para persistir todo en MONGODB con Mongoose.
 
-Desarrollaremos un CRUD completo con una API RestFul con NODE + KOA para persistir todo en MONGODB
+
+### Curso online en Udemy
 
 👉 https://www.udemy.com/programa-hoy-en-mongodb-con-mongoose/
+
+### Otros de mis cursos:
+
+⭐ https://www.udemy.com/user/nahuellema/
+
+---
+
+### Contacto
+
+👋 [Nahuel Lema](https://www.linkedin.com/in/nahuellema/)
