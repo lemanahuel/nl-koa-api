@@ -4,7 +4,7 @@ Desarrollaremos un CRUD completo con una API RestFul con NODE + KOA para persist
 
 ### Curso online en Udemy
 
-👉 https://www.udemy.com/programa-hoy-en-mongodb-con-mongoose/
+👉 https://www.udemy.com/koa-mongodb-comenza-a-programar-hoy/
 
 ### Más cursos:
 
