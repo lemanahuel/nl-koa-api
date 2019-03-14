@@ -4,7 +4,7 @@ Desarrollaremos un CRUD completo con una API RestFul con NODE + KOA para persist
 
 ### Curso online en Udemy
 
-👉 https://www.udemy.com/koa-mongodb-comenza-a-programar-hoy/
+👉 https://www.udemy.com/hapi-mongodb-node-heroku/
 
 ### Más cursos:
 
